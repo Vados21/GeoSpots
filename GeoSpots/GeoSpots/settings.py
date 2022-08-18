@@ -119,7 +119,7 @@ LOGIN_URL = 'users:login'
 LOGIN_REDIRECT_URL = 'posts:index'
 LOGOUT_REDIRECT_URL = 'posts:index'
 
-GOOGLE_API_KEY = 'AIzaSyDEURnIzqdMBY3-rYyRhdyWWpIwPfOc1pI'
+GOOGLE_API_KEY = ''
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
