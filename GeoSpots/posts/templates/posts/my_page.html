@@ -1,12 +1,23 @@
 {% extends 'posts/base.html' %}
 {% block title %}
-блок title
+My page
 {% endblock %}
 
 {% block header %}
-блок title
+
+
+
 {% endblock %}
 
 {% block content %}
-mypage
-{% endblock %}
+<div class="col-md-6">
+    <form action="" method="POST" autocomplete="off">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit" class="btn btn-primary">confirm</button>
+    </form>
+
+    {{ map_folium|safe }}
+</div>
+
+{% endblock content %}

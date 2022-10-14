@@ -1,0 +1,42 @@
+{% extends 'posts/base.html'%}
+{% block title %}
+  Пост 
+{% endblock title %}
+{% block content %}    
+<div class="container py-5">
+  <div class="row">
+    <aside class="col-12 col-md-3">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Pub date: {{ post.pub_date|date:"d E Y" }}
+        </li> 
+        {% if post.group %} 
+          <li class='list-group-item'>
+            Group: {{ post.group.title }}
+            <p>
+              <a href={% url 'posts:group_list' post.group.slug %}>все записи группы</a>
+            </p>
+          </li>
+        {% endif %}          
+        <li class="list-group-item">
+          Author: {{ post.author }}
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Author's posts: {{ author_posts_count }} 
+        </li>
+        <li class="list-group-item">
+          <a href="{% url 'posts:profile' post.author %}">
+            все посты пользователя
+          </a>
+        </li>
+      </ul>
+    </aside>
+    <article class="col-12 col-md-9">
+      <p>{{ post.text|linebreaksbr }}</p>
+      {% if user.is_authenticated and user == post.author %}
+        <a href='/'> Edit post</a>
+      {% endif %}                
+    </article>
+  </div>     
+</div>    
+{% endblock content %}
