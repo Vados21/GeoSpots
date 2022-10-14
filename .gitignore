@@ -9,6 +9,19 @@ node_modules
 
 # Ignore files related to API keys
 .venv
+.venv/lib
 
 # Ignore SASS config files
 .sass-cache
+.GeoIP
+.vscode
+.mypy_cache
+GeoIP
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+vscode
