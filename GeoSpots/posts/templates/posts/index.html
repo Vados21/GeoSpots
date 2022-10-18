@@ -1,4 +1,5 @@
 {% extends 'posts/base.html' %}
+{% load thumbnail %}
 {% block title %}
 Home page
 {% endblock %}
@@ -18,12 +19,18 @@ Home page
           <strong><h4>Post #{{ post.pk }}</h4></strong>
           <aside class="col-12 col-md-3">          
             <p>Author: {{ post.author }}</p>
-            <p>Pub date: {{ post.pub_date|date:"d E Y" }}</p>            
+            <p>Pub date: {{ post.pub_date|date:"d E Y" }}</p>
+            <p>Point:   {{ post.Coor }}  </p>
+            <p>lat:   {{ post.Coor.lat }}  </p>
+            <p>lon:   {{ post.Coor.lon }}  </p>
             <a href="{% url 'posts:post_detail' post.pk %}">Post detail</a>
           </div> 
           <div class="col-md-7">
             <p><strong>Post text:</strong></p>
             <p>{{ post.text }}</p>
+            {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+              <img class="card-img my-2" src="{{ im.url }}">
+            {% endthumbnail %}
           </div>
         </div>
       </div>

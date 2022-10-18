@@ -8,10 +8,12 @@ from .models import Post, Map, LatLon
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ('text', 'group')
+        fields = ('text', 'group', 'image', 'Coor')
         labels = {
             'text': _('Текст'),
-            'group': _('Группа')
+            'group': _('Группа'),
+            'Coor': 'К какому посту относится',
+            'image': 'Photo'
         }
 
 
@@ -27,8 +29,9 @@ class MapForm(ModelForm):
 class LatLonForm(ModelForm):
     class Meta:
         model = LatLon
-        fields = ('lat', 'lon')
+        fields = ('title', 'lat', 'lon')
         labels = {
+            'title': 'Point name',
             'lat': 'Lat',
-            'lon': 'Lon'
+            'lon': 'Lon',
         }

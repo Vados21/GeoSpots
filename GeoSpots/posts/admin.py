@@ -38,7 +38,8 @@ class Comments(admin.ModelAdmin):
 class LatLonAdmin(admin.ModelAdmin):
     list_display = (
         'lat',
-        'lon'
+        'lon',
+
     )
 
 

@@ -21,6 +21,7 @@ def index(request):
 
 def my_page(request):
     form = LatLonForm(request.POST or None)
+    #post = get_object_or_404(Post, id=post_id)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
@@ -29,7 +30,7 @@ def my_page(request):
     for i in point_list:
         for_lat = i.get('lat')
         for_lon = i.get('lon')
-        folium.Marker(location=[for_lat, for_lon]).add_to(map_folium)
+        folium.Marker(location=[for_lat, for_lon], popup='').add_to(map_folium)
 
 #popup='', tooltip=''
 
@@ -37,10 +38,10 @@ def my_page(request):
 
     context = {
         'form': form,
-        'map_folium': map_folium
+        'map_folium': map_folium,
     }
 
-    return render(request, 'posts/my_page.html', context)
+    return render(request, 'posts/map.html', context)
 
 #    #obj = get_object_or_404(Map, id=1)
 #    form = MapForm(request.POST or None)

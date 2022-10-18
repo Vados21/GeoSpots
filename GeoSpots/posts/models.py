@@ -1,7 +1,9 @@
+from typing_extensions import Required
 from unicodedata import decimal
 from unittest.util import _MAX_LENGTH
 from django.contrib.auth import get_user_model
 from django.db import models
+from numpy import require
 
 User = get_user_model()
 
@@ -9,10 +11,21 @@ User = get_user_model()
 class Group(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, max_length=40)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     class Meta:
         verbose_name = 'Заголовок группы'
+
+    def __str__(self):
+        return self.title
+
+
+class LatLon(models.Model):
+    title = models.CharField(max_length=200)
+    destination = models.CharField(max_length=200)
+
+    lat = models.DecimalField(max_digits=10, decimal_places=8)
+    lon = models.DecimalField(max_digits=10, decimal_places=8)
 
     def __str__(self):
         return self.title
@@ -30,6 +43,11 @@ class Post(models.Model):
         Group, blank=True, null=True,
         on_delete=models.SET_NULL,
         related_name='posts'
+    )
+    Coor = models.ForeignKey(
+        LatLon, blank=True, null=True,
+        on_delete=models.CASCADE,
+        related_name='coordinates'
     )
     image = models.ImageField(
         'Картинка',
@@ -89,9 +107,3 @@ class Map(models.Model):
         return str(f' {self.distance} km')
 
 
-class LatLon(models.Model):
-    lat = models.DecimalField(max_digits=10, decimal_places=8, )
-    lon = models.DecimalField(max_digits=10, decimal_places=8, )
-
-    def __int__(self):
-        return int({self.lat}, {self.lon})

@@ -31,7 +31,10 @@ SECRET_KEY = 'django-insecure-_3+n0@zk4+0%1h!f6+ogi&$3_$q*_sln)pj_z-e$m7axqwti!+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'vados21.pythonanywhere.com',
+    'www.vados21.pythonanywhere.com'
+]
 
 
 # Application definition
@@ -47,6 +50,7 @@ INSTALLED_APPS = [
     'api',
     'core',
     'users.apps.UsersConfig',
+    'sorl.thumbnail',
 
 ]
 
@@ -133,6 +137,9 @@ LOGOUT_REDIRECT_URL = 'posts:index'
 GOOGLE_API_KEY = ''
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = 'static/'
 
