@@ -32,6 +32,7 @@ class LatLon(models.Model):
 
 
 class Post(models.Model):
+    title = models.CharField(max_length=200)
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
@@ -54,7 +55,8 @@ class Post(models.Model):
         upload_to='posts/',
         blank=True
     )
-    #location = models.PointField()
+    lat = models.DecimalField(max_digits=10, decimal_places=8)
+    lon = models.DecimalField(max_digits=10, decimal_places=8)
 
     class Meta:
         ordering = ['-pub_date']

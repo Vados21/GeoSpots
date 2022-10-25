@@ -13,7 +13,7 @@
             <a class="nav-link" href="/">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="map">Map</a>
+            <a class="nav-link" href="{% url 'posts:map' %}">Map</a>
           </li>
           {% if user.is_authenticated %}
 

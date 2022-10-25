@@ -26,7 +26,8 @@ def my_page(request):
         instance = form.save(commit=False)
         instance.save()
     map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 4)
-    point_list = LatLon.objects.all().values()
+    point_list = Post.objects.all().values()
+
     map_folium.add_child(folium.LatLngPopup())
 
     for i in point_list:
@@ -101,9 +102,9 @@ def favourites(request):
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, id=post_id)
-    post_lat = post.Coor.lat
-    post_lon = post.Coor.lon
-    post_title = post.Coor.title
+    post_lat = post.lat
+    post_lon = post.lon
+    post_title = post.text
     map_folium = folium.Map(location=[post_lat, post_lon], width=800, height=500, zoom_start = 8)
     folium.Marker(location=[post_lat, post_lon], popup=post_title).add_to(map_folium)
     map_folium = map_folium._repr_html_()
@@ -124,6 +125,19 @@ def post_create(request):
         post.author = request.user
         post.save()
         return redirect('posts:index')
+    map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 4)
+    point_list = Post.objects.all().values()
+    map_folium.add_child(folium.LatLngPopup())
+
+    for i in point_list:
+        for_title = i.get('title')
+        for_lat = i.get('lat')
+        for_lon = i.get('lon')
+        folium.Marker(location=[for_lat, for_lon], popup=for_title).add_to(map_folium)
+
+#popup='', tooltip=''
+
+    map_folium = map_folium._repr_html_()
     context = {'form': form}
 
     return render(request, 'posts/create_post.html', context)

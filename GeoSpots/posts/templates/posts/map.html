@@ -11,11 +11,7 @@ Map
 
 {% block content %}
 <div class="col-md-6">
-    <form action="" method="POST" autocomplete="off" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{form.as_p}}
-        <button type="submit" class="btn btn-primary">confirm</button>
-    </form>
+
 
     {{ map_folium|safe }}
     
