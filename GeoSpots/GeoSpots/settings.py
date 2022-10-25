@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from django.conf import settings
+from django.conf.urls.static import static
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,10 +33,7 @@ SECRET_KEY = 'django-insecure-_3+n0@zk4+0%1h!f6+ogi&$3_$q*_sln)pj_z-e$m7axqwti!+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'vados21.pythonanywhere.com',
-    'www.vados21.pythonanywhere.com'
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -142,8 +141,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+#if settings.DEBUG:
+#    urlpatterns += static(
+#        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+#    )

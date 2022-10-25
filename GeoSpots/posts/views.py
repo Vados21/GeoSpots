@@ -27,10 +27,13 @@ def my_page(request):
         instance.save()
     map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 4)
     point_list = LatLon.objects.all().values()
+    map_folium.add_child(folium.LatLngPopup())
+
     for i in point_list:
+        for_title = i.get('title')
         for_lat = i.get('lat')
         for_lon = i.get('lon')
-        folium.Marker(location=[for_lat, for_lon], popup='').add_to(map_folium)
+        folium.Marker(location=[for_lat, for_lon], popup=for_title).add_to(map_folium)
 
 #popup='', tooltip=''
 
@@ -98,24 +101,29 @@ def favourites(request):
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, id=post_id)
+    post_lat = post.Coor.lat
+    post_lon = post.Coor.lon
+    post_title = post.Coor.title
+    map_folium = folium.Map(location=[post_lat, post_lon], width=800, height=500, zoom_start = 8)
+    folium.Marker(location=[post_lat, post_lon], popup=post_title).add_to(map_folium)
+    map_folium = map_folium._repr_html_()
     author_posts_count = post.author.posts.count()
     context = {
         'post': post,
-        'author_posts_count': author_posts_count
+        'author_posts_count': author_posts_count,
+        'map_folium': map_folium,
     }
     return render(request, template, context)
 
 
 @login_required
 def post_create(request):
-    form = PostForm()
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            return redirect('posts:index')
+    form = PostForm(request.POST or None, files=request.FILES or None)
+    if form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:index')
     context = {'form': form}
 
     return render(request, 'posts/create_post.html', context)

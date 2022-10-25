@@ -1,5 +1,5 @@
 {% extends 'posts/base.html' %}
-{% load thumbnail %}
+
 {% block title %}
 Home page
 {% endblock %}
@@ -10,7 +10,7 @@ Home page
 
 {% block content %}
 <!--<p><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15386.17476476523!2d28.774751099999996!3d61.1809525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4690a60954670931%3A0x1ca1e1f6ed6f1e03!2sVeikonpolku%202%2C%2055100%20Imatra!5e0!3m2!1sru!2sfi!4v1661949321253!5m2!1sru!2sfi" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></p> -->
-
+{% load thumbnail %}
   {% for post in page_obj %} 
     <hr>
     <div class="container style=border: thin solid black">

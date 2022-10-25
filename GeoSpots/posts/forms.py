@@ -32,6 +32,6 @@ class LatLonForm(ModelForm):
         fields = ('title', 'lat', 'lon')
         labels = {
             'title': 'Point name',
-            'lat': 'Lat',
-            'lon': 'Lon',
+            'lat': 'Latitude',
+            'lon': 'Longitude',
         }

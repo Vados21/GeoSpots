@@ -1,5 +1,6 @@
 {% extends 'posts/base.html'%}
 {% block title %}
+{% load thumbnail %}
 {% if is_edit %}
   Редактировать пост
 {% else %}
@@ -34,12 +35,13 @@
                       </div>
                     {% endfor %}
                   {% endif %}                                
-                  <form method="post" action=
+                  <form method="post" enctype="multipart/form-data" action=
                     {% if is_edit %}
                       "{% url 'posts:post_edit' post.pk %}"
                       {% else %} 
                       "{% url 'posts:create_post' %}"
                     {% endif %}>
+                    
                   {% for field in form %} 
                     <div class="form-group row my-3">
                       <label for="{{ field.id_for_label }}">
