@@ -1,12 +1,12 @@
-#WORKING IN PROGRESS
-##GeoSpots
+<h1>WORKING IN PROGRESS</h1>
+<h2>GeoSpots</h2>
 <p>GeoSpots - is a petproject with which you can find a place where you can go and make a beautiful photo to the instagram or just spend time admiring beautiful places
 
 
 
 
-##How to use
-__Terminal commands__
+<h2>How to use</h2>
+<p>__Terminal commands__</p>
 
 _step 1_
 ```bash
