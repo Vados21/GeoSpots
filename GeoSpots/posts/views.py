@@ -1,11 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
-from .models import Post, User, Map, LatLon
-from django.contrib.auth.decorators import login_required
-from .forms import MapForm, PostForm, LatLonForm
-from geopy.geocoders import Nominatim
-#from .utils import get_geo
+import logging
+
 import folium
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import CommentForm, LatLonForm, PostForm
+from .models import Post, User
+
+logging.basicConfig(level=logging.INFO)
 
 
 def index(request):
@@ -21,11 +24,13 @@ def index(request):
 
 def my_page(request):
     form = LatLonForm(request.POST or None)
-    #post = get_object_or_404(Post, id=post_id)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
-    map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 4)
+    map_folium = folium.Map(
+        location=[61.171310, 28.766600],
+        width=1200, height=700, zoom_start=4
+    )
     point_list = Post.objects.all().values()
 
     map_folium.add_child(folium.LatLngPopup())
@@ -34,10 +39,29 @@ def my_page(request):
         for_title = i.get('title')
         for_lat = i.get('lat')
         for_lon = i.get('lon')
-        folium.Marker(location=[for_lat, for_lon], popup=for_title).add_to(map_folium)
+        for_group = i.get('group_id')
+        if for_group == 2:
+            folium.Marker(
+                location=[for_lat, for_lon],
+                popup=for_title,
+                icon=folium.Icon(
+                    icon="glyphicon-home", prefix='glyphicon', color='red')
+                    ).add_to(map_folium)
+        elif for_group == 3:
+            folium.Marker(
+                location=[for_lat, for_lon],
+                popup=for_title, icon=folium.Icon(
+                    icon="glyphicon-tree-conifer",
+                    prefix='glyphicon', color='green')
+                    ).add_to(map_folium)
 
-#popup='', tooltip=''
-
+        else:
+            folium.Marker(
+                location=[for_lat, for_lon],
+                popup=for_title, icon=folium.Icon(
+                    icon="glyphicon-tint",
+                    prefix='glyphicon')
+                    ).add_to(map_folium)
     map_folium = map_folium._repr_html_()
 
     context = {
@@ -46,49 +70,6 @@ def my_page(request):
     }
 
     return render(request, 'posts/map.html', context)
-
-#    #obj = get_object_or_404(Map, id=1)
-#    form = MapForm(request.POST or None)
-#    geolocator = Nominatim(user_agent='GeoSpots')
-#    #ip = '84.248.157.53'
-#    #counrty, city, lat, lon = get_geo(ip)
-#    #print('country is', counrty)
-#    #print('city is', city)
-#    #print('lat is', lat)
-#    #print('long is', lon)
-#
-#    map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 7)
-#    folium.Marker(location=[61.054993, 28.189663], popup='LPR', tooltip='click here').add_to(map_folium)
-#
-#    #сделать модель для координат, сохранять значения из формы и передаватьих на карту
-#    #point_list = [[61.054993, 28.189663], [61.171310, 28.766600]]
-#    
-#    #перебор списка с координатами
-#    #for i in index.point_list(len(point_list)):
-#    #    print(range(point_list))
-#    #folium.Marker(location=[i], popup='LPR', tooltip='click here').add_to(map_folium)
-#
-#    if form.is_valid():
-#        instance = form.save(commit=False)
-#        destination1 = form.cleaned_data.get('destination')
-#        destination = geolocator.geocode(destination1)
-#        print(destination)
-#        d_lat = destination.latitude
-#        d_long = destination.longitude
-#        print(d_lat)
-#        print(d_long)
-#        instance.location = 'Lappeenranta'
-#        instance.distance = 30.00
-#        #instance.save()
-#        folium.Marker(location=[d_lat, d_long], popup='LPR', tooltip='click here').add_to(map_folium)
-#    map_folium = map_folium._repr_html_()
-#    context = {
-#        #'distance': obj,
-#        'form': form,
-#        'map': map_folium
-#
-#    }
-
 
 
 def follow(request):
@@ -100,19 +81,43 @@ def favourites(request):
 
 
 def post_detail(request, post_id):
+    logging.info('post_detail started')
     template = 'posts/post_detail.html'
     post = get_object_or_404(Post, id=post_id)
     post_lat = post.lat
     post_lon = post.lon
     post_title = post.text
-    map_folium = folium.Map(location=[post_lat, post_lon], width=800, height=500, zoom_start = 8)
-    folium.Marker(location=[post_lat, post_lon], popup=post_title).add_to(map_folium)
+    post_group = post.group.id
+    map_folium = folium.Map(
+        location=[post_lat, post_lon],
+        width=800, height=500, zoom_start=8)
+    if post_group == 2:
+        folium.Marker(
+            location=[post_lat, post_lon],
+            popup=post_title, icon=folium.Icon(
+                icon="glyphicon-home", prefix='glyphicon', color='red')
+                ).add_to(map_folium)
+    elif post_group == 3:
+        folium.Marker(
+            location=[post_lat, post_lon],
+            popup=post_title, icon=folium.Icon(
+                icon="glyphicon-tree-conifer",
+                prefix='glyphicon', color='green')
+                ).add_to(map_folium)
+    else:
+        folium.Marker(
+            location=[post_lat, post_lon],
+            popup=post_title, icon=folium.Icon(
+                icon="glyphicon-tint", prefix='glyphicon')
+                ).add_to(map_folium)
     map_folium = map_folium._repr_html_()
     author_posts_count = post.author.posts.count()
+
     context = {
         'post': post,
         'author_posts_count': author_posts_count,
         'map_folium': map_folium,
+
     }
     return render(request, template, context)
 
@@ -125,18 +130,19 @@ def post_create(request):
         post.author = request.user
         post.save()
         return redirect('posts:index')
-    map_folium = folium.Map(location=[61.171310, 28.766600], width=800, height=500, zoom_start = 4)
+    map_folium = folium.Map(
+        location=[61.171310, 28.766600],
+        width=800, height=500, zoom_start=4)
     point_list = Post.objects.all().values()
     map_folium.add_child(folium.LatLngPopup())
 
     for i in point_list:
-        for_title = i.get('title')
-        for_lat = i.get('lat')
-        for_lon = i.get('lon')
-        folium.Marker(location=[for_lat, for_lon], popup=for_title).add_to(map_folium)
-
-#popup='', tooltip=''
-
+        post_title = i.get('title')
+        post_lat = i.get('lat')
+        post_lon = i.get('lon')
+        folium.Marker(
+            location=[post_lat, post_lon],
+            popup=post_title).add_to(map_folium)
     map_folium = map_folium._repr_html_()
     context = {'form': form}
 
@@ -156,3 +162,27 @@ def profile(request, username):
         'page_obj': page_obj,
     }
     return render(request, 'posts/profile.html', context)
+
+
+@login_required
+def add_comment(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    form = CommentForm(request.POST or None)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.author = request.user
+        comment.post = post
+        comment.save()
+    return redirect('posts:post_detail', post_id=post_id)
+
+
+def add_like(request, post_id):
+    logging.info('add_like started')
+    post = get_object_or_404(Post, id=post_id)
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        logging.info('removed')
+    else:
+        post.likes.add(request.user)
+        logging.info('added')
+    return redirect('posts:post_detail', post_id=post_id)

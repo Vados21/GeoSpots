@@ -22,7 +22,7 @@ Home page
 
                 <ul class="list-group list-group-flush"> 
                   <li class="list-group-item">       
-                    Author: {{ post.author }}
+                    Author: <a href="{% url 'posts:profile' post.author %}"> {{ post.author }}</a>
                  </li>
                   <li class="list-group-item">
                     Pub date: {{ post.pub_date|date:"d E Y" }}
@@ -31,14 +31,21 @@ Home page
                     Point:   {{ post.title }}
                   </li>
                   <li class="list-group-item">
-                    Group: {{ post.group.title }}
+                    Category: {{ post.group.title }}
                   </li>
                   <li class="list-group-item">
                     lat:   {{ post.lat }}
                     <p>lon:   {{ post.lon }}</p>
                   </li>
-                  <a href="{% url 'posts:post_detail' post.pk %}">Post detail</a>
+                  <li class="list-group-item">
+                    <a href="{% url 'posts:add_like' post.pk %}"> 
+                      <img src="media/icons/like.jpg" width="25", height="25">
+                    </a>
+                    Likes: {{ post.likes.count }}
+                  </li>
+                    <a href="{% url 'posts:post_detail' post.pk %}">Post detail</a>
                 </ul>
+
 
             </aside>
           </div>  
@@ -48,7 +55,32 @@ Home page
               {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
                 <img class="card-img my-2" src="{{ im.url }}">
               {% endthumbnail %}
+
             </div>
+                            <hr>
+                {% if not post.comments.all %}
+                <p>No comments yet</p>
+                  <p><a href={% url 'posts:add_comment' post.pk %}> Add first comment</a>
+                {% else %}
+                  <strong>Comments:</strong>
+                  {% for comment in post.comments.all %}
+                    <div class="media mb-4">
+                      <div class="media-body">
+                        <h6 class="mt-0">
+                          Author:  {{ comment.author.username }}
+                            
+
+                        </h6>
+                        <strong>Date:</strong> {{ comment.pub_date|date:"d E Y" }}
+                          <p>
+                            <strong>Text:</strong> {{ comment.text }}
+                          </p>
+                          <hr>
+                      </div>
+                    </div>
+                  {% endfor %} 
+                  <a href={% url 'posts:add_comment' post.pk %}> Сomment</a>               
+                {% endif %}
           </div>
         </div>
 

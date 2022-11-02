@@ -1,6 +1,6 @@
 {% extends 'posts/base.html'%}
 {% block title %}
-  Пост 
+  Post {{ post.title }}
 {% endblock title %}
 {% block content %}  
 {% load thumbnail %}  
@@ -21,13 +21,18 @@
               Point:   {{ post.title }}
             </li>
             <li class="list-group-item">
-              Group: {{ post.group.title }}
+              Category: {{ post.group.title }}
             </li>
             <li class="list-group-item">
               lat:   {{ post.lat }}
               <p>lon:   {{ post.lon }}</p>
             </li>
-
+            <li class="list-group-item">
+              <a href="{% url 'posts:add_like' post.pk %}"> 
+                <img src="media/icons/like.jpg" width="25", height="25">
+              </a>
+              Likes: {{ post.likes.count }}
+            </li>
           </ul>
 
       </aside>
@@ -41,8 +46,58 @@
       <p>{{ map_folium|safe }}</p>
       {% if user.is_authenticated and user == post.author %}
         <a href='/'> Edit post</a>
-      {% endif %}                
+      {% endif %} 
+      <div class="card my-4">
+        <h5 class="card-header">Add comment:</h5>
+        <div class="card-body">
+          <form method="post" action="{% url 'posts:add_comment' post.id %}">
+            <input type="hidden" name="csrfmiddlewaretoken" value="">      
+            <div class="form-group mb-2">
+              <textarea name="text" cols="40" rows="10" class="form-control" required id="id_text">
+              </textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+            {% csrf_token %}
+          </form>
+        </div>
+      </div>
+      <h4> Comments: </h4>
+      {% for comment in post.comments.all %}
+        <div class="media mb-4">
+          <div class="media-body">
+            <h5 class="mt-0">
+              <a href="{% url 'posts:profile' comment.author.username %}">
+                {{ comment.author.username }}
+              </a>
+            </h5>
+        {{ comment.date_added }}
+        <p>
+          {{ comment.text }}
+        </p>
+          </div>
+        </div> 
+      {% endfor %} 
+
     </article>
   </div>     
-</div>    
+</div>  
+
+{% for comment in comments %}
+  <div class="media mb-4">
+    <div class="media-body">
+      <h5 class="mt-0">
+        <a href="{% url 'posts:profile' comment.author.username %}">
+          {{ comment.author.username }}
+        </a>
+      </h5>
+        <p>
+         {{ comment.text }}
+        </p>
+      </div>
+    </div>
+
+{% endfor %}               
+    </article>
+  </div>     
+</div> 
 {% endblock content %}

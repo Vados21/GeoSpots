@@ -26,3 +26,8 @@ env.bak/
 venv.bak/
 vscode
 .media/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover 

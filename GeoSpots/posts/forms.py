@@ -1,8 +1,7 @@
 from django.forms import ModelForm
-from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Post, Map, LatLon
+from .models import Comment, LatLon, Map, Post
 
 
 class PostForm(ModelForm):
@@ -11,8 +10,8 @@ class PostForm(ModelForm):
         fields = ('title', 'text', 'group', 'image', 'lat', 'lon')
         labels = {
             'title': 'Name',
-            'text': _('Текст'),
-            'group': _('Группа'),
+            'text': _('Text'),
+            'group': _('Category'),
             'Coor': 'К какому посту относится',
             'image': 'Photo',
             'lat': 'Latitude',
@@ -37,4 +36,13 @@ class LatLonForm(ModelForm):
             'title': 'Point name',
             'lat': 'Latitude',
             'lon': 'Longitude',
+        }
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ('text',)
+        labels = {
+            'text': 'Текст',
         }

@@ -1,9 +1,5 @@
-from typing_extensions import Required
-from unicodedata import decimal
-from unittest.util import _MAX_LENGTH
 from django.contrib.auth import get_user_model
 from django.db import models
-from numpy import require
 
 User = get_user_model()
 
@@ -57,9 +53,13 @@ class Post(models.Model):
     )
     lat = models.DecimalField(max_digits=10, decimal_places=8)
     lon = models.DecimalField(max_digits=10, decimal_places=8)
+    likes = models.ManyToManyField(User, related_name='likes', blank=True)
 
     class Meta:
         ordering = ['-pub_date']
+
+    def number_of_likes(self):
+        return self.likes.count()
 
     def __str__(self):
         return self.text
@@ -107,5 +107,3 @@ class Map(models.Model):
 
     def __str__(self):
         return str(f' {self.distance} km')
-
-
