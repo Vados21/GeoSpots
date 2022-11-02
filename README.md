@@ -6,7 +6,7 @@
 
 
 <h2>How to use</h2>
-<p>__Terminal commands__</p>
+<p><b>Terminal commands__</b></p>
 
 _step 1_
 ```bash
