@@ -12,6 +12,12 @@ from .models import Post, User
 import urllib.request
 import json
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+secret_token = os.getenv('TOKEN_WEATHER')
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -80,7 +86,7 @@ def my_page(request):
 
 
 def follow(request):
-    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=60.1634&lon=23.5107&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1&units=metric').read()
+    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=60.1634&lon=23.5107&appid=' + secret_token + '&=' + secret_token +'&units=metric').read()
     list_of_data = json.loads(data)
     context = {
         'temp': str(list_of_data['main']['temp']) + ' °C',
@@ -97,7 +103,7 @@ def weather(request):
         source = urllib.request.urlopen(
             'http://api.openweathermap.org/data/2.5/weather?q=' +
             city +
-            '&units=metric&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1'
+            '&units=metric&appid=' + secret_token + '&=' + secret_token
             ).read()
         list_of_data = json.loads(source)
 
@@ -152,7 +158,7 @@ def post_detail(request, post_id):
                 ).add_to(map_folium)
     map_folium = map_folium._repr_html_()
     author_posts_count = post.author.posts.count()
-    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=' + str(post_lat) + '&lon=' + str(post_lon) + '&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1&units=metric').read()
+    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=' + str(post_lat) + '&lon=' + str(post_lon) + '&appid=' + secret_token + '&=' + secret_token + '&units=metric').read()
     list_of_data = json.loads(data)
     context = {
         'post': post,
