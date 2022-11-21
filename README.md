@@ -1,6 +1,6 @@
 <h1>WORKING IN PROGRESS</h1>
 <h2>GeoSpots</h2>
-<p>GeoSpots - is a petproject with which you can find a place where you can go and make a beautiful photo to the instagram or just spend time admiring beautiful places
+<p>GeoSpots - is a petproject with which you can find a place where to go and make a beautiful photo to the instagram or just spend time admiring beautiful places
 
 
 

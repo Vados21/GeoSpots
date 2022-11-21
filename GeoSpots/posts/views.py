@@ -1,6 +1,7 @@
 import logging
 
 import folium
+
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,11 +9,16 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import CommentForm, LatLonForm, PostForm
 from .models import Post, User
 
+import urllib.request
+import json
+
+
 logging.basicConfig(level=logging.INFO)
 
 
 def index(request):
-    post_list = Post.objects.all()
+    logging.info('index started')
+    post_list = Post.objects.all().select_related('author')
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -23,6 +29,7 @@ def index(request):
 
 
 def my_page(request):
+    logging.info('map started')
     form = LatLonForm(request.POST or None)
     if form.is_valid():
         instance = form.save(commit=False)
@@ -45,7 +52,7 @@ def my_page(request):
                 location=[for_lat, for_lon],
                 popup=for_title,
                 icon=folium.Icon(
-                    icon="glyphicon-home", prefix='glyphicon', color='red')
+                    icon="glyphicon-tower", prefix='glyphicon', color='black')
                     ).add_to(map_folium)
         elif for_group == 3:
             folium.Marker(
@@ -73,11 +80,44 @@ def my_page(request):
 
 
 def follow(request):
-    return render(request, 'posts/follow.html')
+    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=60.1634&lon=23.5107&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1&units=metric').read()
+    list_of_data = json.loads(data)
+    context = {
+        'temp': str(list_of_data['main']['temp']) + ' °C',
+    }
+    print(data)
+    return render(request, 'posts/follow.html', context)
 
 
-def favourites(request):
-    return render(request, 'posts/favorites.html')
+def weather(request):
+    logging.info('weather started')
+    if request.method == 'POST':
+        city = request.POST['city']
+
+        source = urllib.request.urlopen(
+            'http://api.openweathermap.org/data/2.5/weather?q=' +
+            city +
+            '&units=metric&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1'
+            ).read()
+        list_of_data = json.loads(source)
+
+        data = {
+            "country_code": str(list_of_data['sys']['country']),
+            "coordinate": str(list_of_data['coord']['lon']) + ', '
+            + str(list_of_data['coord']['lat']),
+
+            "temp": str(list_of_data['main']['temp']) + ' °C',
+            "pressure": str(list_of_data['main']['pressure']),
+            "humidity": str(list_of_data['main']['humidity']),
+            'main': str(list_of_data['weather'][0]['main']),
+            'description': str(list_of_data['weather'][0]['description']),
+            'icon': list_of_data['weather'][0]['icon'],
+        }
+
+    else:
+        data = {}
+
+    return render(request, "posts/weather.html", data)
 
 
 def post_detail(request, post_id):
@@ -95,7 +135,7 @@ def post_detail(request, post_id):
         folium.Marker(
             location=[post_lat, post_lon],
             popup=post_title, icon=folium.Icon(
-                icon="glyphicon-home", prefix='glyphicon', color='red')
+                icon="glyphicon-tower", prefix='glyphicon', color='black')
                 ).add_to(map_folium)
     elif post_group == 3:
         folium.Marker(
@@ -112,11 +152,14 @@ def post_detail(request, post_id):
                 ).add_to(map_folium)
     map_folium = map_folium._repr_html_()
     author_posts_count = post.author.posts.count()
-
+    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=' + str(post_lat) + '&lon=' + str(post_lon) + '&appid=446b6e8e3475d97c2504c6b27b11baa1&=446b6e8e3475d97c2504c6b27b11baa1&units=metric').read()
+    list_of_data = json.loads(data)
     context = {
         'post': post,
         'author_posts_count': author_posts_count,
         'map_folium': map_folium,
+        'temp': str(list_of_data['main']['temp']) + ' °C',
+        'icon': list_of_data['weather'][0]['icon'],
 
     }
     return render(request, template, context)
@@ -124,6 +167,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    logging.info('post create started')
     form = PostForm(request.POST or None, files=request.FILES or None)
     if form.is_valid():
         post = form.save(commit=False)
@@ -150,6 +194,7 @@ def post_create(request):
 
 
 def profile(request, username):
+    logging.info('profile started')
     user = get_object_or_404(User, username=username)
     post_list = user.posts.all()
     paginator = Paginator(post_list, 10)
@@ -166,6 +211,7 @@ def profile(request, username):
 
 @login_required
 def add_comment(request, post_id):
+    logging.info('add comment started')
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():

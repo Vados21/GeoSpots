@@ -3,6 +3,8 @@ from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView
 from django.views.generic.edit import CreateView
+from django.db import models
+from django.contrib.auth.models import User
 
 from .forms import ContactForm, CreationForm
 
@@ -23,3 +25,7 @@ class PasswordReset(PasswordResetForm):
     form_class = PasswordResetForm
     success_url = reverse_lazy('posts:index')
     template_name = 'users/password_reset_form.html'
+
+
+#class UserProfile(models.Model):
+#    user = models.OneToOneField

@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>  
-
+    <style type="text/css">
+      .sidenav {
+        height: 100%;
+        width: 160px;
+        position: fixed;
+        background-color:#1111;
+      }
+    </style>
 
     <title>
       {% block title %}
@@ -14,6 +21,49 @@
     <header>
       {% include 'posts/includes/header.html' %}
     </header>
+    <div class="sidenav" background="green">
+      <nav id="menuVerticsl">
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'posts:map' %}">Map</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'posts:weather' %}">Weather</a>
+          </li>
+          {% if user.is_authenticated %}
+
+            <li class="nav-item"> 
+              <a class="nav-link" href="{% url 'posts:create_post' %}">New post</a>
+            </li>
+            <li class="nav-item">              
+              <a class="nav-link 
+                {% if request.resolver_match.view_name  == 'users:password_change' %}
+                  active
+                {% endif %}"
+                href="{% url 'users:password_change' %}"
+              >
+                Change password
+              </a>
+            </li>
+            
+            <li class="nav-item"> 
+              <a class="nav-link link-dark" href="{% url 'users:logout' %}">Logout</a>
+            </li>
+            
+            {% else %}
+              <li class="nav-item"> 
+                <a class="nav-link link-dark" href="{% url 'users:login' %}">Login</a>
+              </li>
+              <li class="nav-item"> 
+                <a class="nav-link link-dark" href="{% url 'users:signup' %}">Sing up</a>
+              </li>
+          {% endif %}
+        </ul>
+      </nav> 
+    </div>
     <main>
       <center>
         {% block content %}

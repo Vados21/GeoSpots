@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'core',
     'users.apps.UsersConfig',
     'sorl.thumbnail',
+    'debug_toolbar',
+    'rest_framework',
 
 ]
 
@@ -62,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'GeoSpots.urls'
@@ -149,6 +152,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 
 #if settings.DEBUG:
 #    urlpatterns += static(

@@ -41,11 +41,6 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         related_name='posts'
     )
-    Coor = models.ForeignKey(
-        LatLon, blank=True, null=True,
-        on_delete=models.CASCADE,
-        related_name='coordinates'
-    )
     image = models.ImageField(
         'Картинка',
         upload_to='posts/',
@@ -58,8 +53,8 @@ class Post(models.Model):
     class Meta:
         ordering = ['-pub_date']
 
-    def number_of_likes(self):
-        return self.likes.count()
+    #def number_of_likes(self):
+    #    return self.likes.count()
 
     def __str__(self):
         return self.text

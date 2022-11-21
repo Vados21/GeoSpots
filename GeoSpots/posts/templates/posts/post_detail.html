@@ -29,7 +29,7 @@
             </li>
             <li class="list-group-item">
               <a href="{% url 'posts:add_like' post.pk %}"> 
-                <img src="media/icons/like.jpg" width="25", height="25">
+                <img src="/media/icons/like.jpg" width="25", height="25">
               </a>
               Likes: {{ post.likes.count }}
             </li>
@@ -39,6 +39,8 @@
     </div> 
     <article class="col-md-7">
       <p><strong><h4>{{ post.title }}</h4></strong> </p>
+      <p>{{ temp }} <img
+        src="http://openweathermap.org/img/w/{{icon}}.png" alt="Image" style="width:70px"></p>
       <p>{{ post.text|linebreaksbr }}</p>
       {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
         <img class="card-img my-2" src="{{ im.url }}">
@@ -80,7 +82,8 @@
 
     </article>
   </div>     
-</div>  
+</div> 
+{{ favourites.data }}
 
 {% for comment in comments %}
   <div class="media mb-4">
