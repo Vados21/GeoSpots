@@ -62,24 +62,50 @@ Home page
                 <p>No comments yet</p>
                   <p><a href={% url 'posts:add_comment' post.pk %}> Add first comment</a>
                 {% else %}
-                  <strong>Comments:</strong>
+                  <h3><strong>Comments:</strong></h3>
+                  {% load thumbnail %}
                   {% for comment in post.comments.all %}
-                    <div class="media mb-4">
-                      <div class="media-body">
-                        <h6 class="mt-0">
-                          Author:  {{ comment.author.username }}
-                            
 
-                        </h6>
-                        <strong>Date:</strong> {{ comment.pub_date|date:"d E Y" }}
-                          <p>
-                            <strong>Text:</strong> {{ comment.text }}
-                          </p>
-                          <hr>
+
+
+                  <div class="card mb-3">
+                    <div class="row g-0">
+                      <div class="col-md-2">
+                        {% thumbnail post.author.profile.avatar "50x50" crop="center" upscale=True as im %}
+                          <img class="rounded-circle" src="{{ im.url }}">
+                        {% endthumbnail %}
+                        <p>{{ comment.author.username }}</p>
+                      </div>
+                      
+
+                      <div class="col-md-8">
+                        <div class="card-body">
+                      
+                          <p class="card-text">{{ comment.text }}</p>
+                          <p class="card-text"><small class="text-muted">posted {{ comment.whenpublished }}</small></p>
+                        </div>
                       </div>
                     </div>
+                  </div>
+                  
+
+
+
                   {% endfor %} 
-                  <a href={% url 'posts:add_comment' post.pk %}> Сomment</a>               
+
+
+                      <form method="post" action="{% url 'posts:add_comment' post.id %}">
+                        <input type="hidden" name="csrfmiddlewaretoken" value="" placeholder="Username">      
+                        <div class="form-group mb-2">
+                          <textarea name="text" cols="40" rows="1" class="form-control" required id="id_text">
+                          </textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                        {% csrf_token %}
+                      </form>
+
+
+              
                 {% endif %}
           </div>
         </div>

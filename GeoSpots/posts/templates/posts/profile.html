@@ -3,6 +3,12 @@
   Профайл пользователя {{ username }}
 {% endblock title %}
 {% block content %}
+{% load thumbnail %}
+<div class="col-md-2">
+  {% thumbnail user.profile.avatar "400x400" crop="center" upscale=True as im %}
+    <img class="card-img my-2" src="{{ im.url }}">
+  {% endthumbnail %}
+</div>
 <div class="container py-5">        
   <h1>Все посты пользователя {{ username }} </h1>
   <h3>Всего постов: {{ post_counter }} </h3>   

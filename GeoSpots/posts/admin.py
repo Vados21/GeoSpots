@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Comment, Follow, Group, LatLon, Map, Post
+from .models import Comment, Follow, Group, LatLon, Map, Post, Profile
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -44,9 +44,18 @@ class LatLonAdmin(admin.ModelAdmin):
     )
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'surname',
+        'date_of_birth',
+        'avatar'
+    )
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Group)
 admin.site.register(Comment)
 admin.site.register(Follow)
 admin.site.register(Map)
 admin.site.register(LatLon)
+admin.site.register(Profile)

@@ -56,14 +56,14 @@
           <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
         </form>
         {% if user.is_authenticated %}
+        {% load thumbnail %}
+        {% thumbnail user.profile.avatar "400x400" crop="center" upscale=True as im %}
           <div class="dropdown text-end">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://static.tildacdn.com/tild6333-3538-4664-a134-643134316461/IMG_3183_2_1.png" alt="mdo" width="32" height="32" class="rounded-circle">
-
-                {{ user.username }}
-
+              <img src="{{ im.url }}"  alt="mdo" width="32" height="32" class="rounded-circle">
             </a>
-          </div>
+          {% endthumbnail %}
+          {{ user.username }}
           
         {% endif %}  
       </div>
