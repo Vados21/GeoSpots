@@ -12,6 +12,11 @@ from .models import Post, User
 import urllib.request
 import json
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from rest_framework import status
+
 import os
 from dotenv import load_dotenv
 
@@ -22,6 +27,7 @@ secret_token = os.getenv('TOKEN_WEATHER')
 logging.basicConfig(level=logging.INFO)
 
 
+@api_view(['GET', 'POST'])
 def index(request):
     logging.info('index started')
     post_list = Post.objects.all().select_related('author')
@@ -126,6 +132,7 @@ def weather(request):
     return render(request, "posts/weather.html", data)
 
 
+@api_view(['GET', 'POST'])
 def post_detail(request, post_id):
     logging.info('post_detail started')
     template = 'posts/post_detail.html'
@@ -166,6 +173,8 @@ def post_detail(request, post_id):
         'map_folium': map_folium,
         'temp': str(list_of_data['main']['temp']) + ' °C',
         'icon': list_of_data['weather'][0]['icon'],
+        'country_code': str(list_of_data['sys']['country']),
+        'description': str(list_of_data['weather'][0]['description']),
 
     }
     return render(request, template, context)
@@ -238,3 +247,6 @@ def add_like(request, post_id):
         post.likes.add(request.user)
         logging.info('added')
     return redirect('posts:post_detail', post_id=post_id)
+
+
+

@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('posts.urls', namespace='posts')),
     path('auth/', include('users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
+    path('', include('api.urls')),
 ]
 
 if settings.DEBUG:
