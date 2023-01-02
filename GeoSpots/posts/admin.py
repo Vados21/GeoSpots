@@ -31,9 +31,11 @@ class GroupAdmin(admin.ModelAdmin):
 
 class Comments(admin.ModelAdmin):
     list_display = (
+        'pk',
         'post',
-        'author'
+        'author',
     )
+    filter_horizontal = ['likes_comment']
 
 
 class LatLonAdmin(admin.ModelAdmin):

@@ -1,0 +1,47 @@
+.sidenav {
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  background-color:#1111;
+}
+
+#article {
+  
+  border-radius: 25px;
+  padding: 10px;
+  
+  background: #ffffff;
+}
+
+#bodycolor {
+  background: #EBF5FC;
+}
+#left {
+  text-align: left;
+}
+#right {
+  text-align: right;
+}
+#photo {
+  border-radius: 25px;
+}
+#nav {
+  position:fixed;
+  width: 200px;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  
+  height: 100%;
+  background: #ffffff;
+  
+}
+
+#indent {
+  margin-top: 5%;
+}
+
+#text_size {
+  font-size: 20pt;
+  font-weight: 600;
+}

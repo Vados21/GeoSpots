@@ -56,7 +56,7 @@ Home page
                 <img class="card-img my-2" src="{{ im.url }}">
               {% endthumbnail %}
 
-            </div>
+            
                             <hr>
                 {% if not post.comments.all %}
                 <p>No comments yet</p>
@@ -71,10 +71,18 @@ Home page
                   <div class="card mb-3">
                     <div class="row g-5">
                       <div class="col-md-2">
-                        {% thumbnail post.author.profile.avatar "50x50" crop="center" upscale=True as im %}
-                          <img class="rounded-circle" src="{{ im.url }}">
-                        {% endthumbnail %}
-                        <p>{{ comment.author.username }}</p>
+                        {% if comment.author.profile.avatar %}
+                          {% thumbnail post.author.profile.avatar "50x50" crop="center" upscale=True as im %}
+                            <img class="rounded-circle" src="{{ im.url }}">
+                          {% endthumbnail %}
+                          <p>{{ comment.author.username }}</p>
+                          <a href="{% url 'posts:profile' comment.author %}"> {{ coment.author }}</a>
+                        {% else %}
+                          <img src="media/avatars/noava.jpg" width="50", height="50" class="rounded-circle">
+
+                          <p>{{ comment.author.username }}</p>
+                          <a href="{% url 'posts:profile' comment.author %}"> {{ coment.author }}</a>
+                        {% endif %}
                       </div>
                       
 
@@ -82,6 +90,12 @@ Home page
                         <div class="card-body">
                       
                           <p class="card-text">{{ comment.text }}</p>
+                          <li class="list-group-item">
+                            <a href="{% url 'posts:add_like_comment' comment.pk %}"> 
+                              <img src="media/icons/like.jpg" width="25", height="25">
+                            </a>
+                            Likes: {{ comment.likes_comment.count }}
+                          </li>
                           <p class="card-text"><small class="text-muted">posted {{ comment.whenpublished }}</small></p>
                         </div>
                       </div>
@@ -107,6 +121,7 @@ Home page
 
               
                 {% endif %}
+              </div>
           </div>
         </div>
 

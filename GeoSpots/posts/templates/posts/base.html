@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>  
-    <style type="text/css">
-      .sidenav {
-        height: 100%;
-        width: 160px;
-        position: fixed;
-        background-color:#1111;
-      }
-    </style>
+  {% load static %}
+  <head> 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
 
     <title>
       {% block title %}

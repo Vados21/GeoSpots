@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CommentForm, LatLonForm, PostForm
-from .models import Post, User
+from .models import Post, User, Comment, Follow
 
 import urllib.request
 import json
@@ -27,7 +27,6 @@ secret_token = os.getenv('TOKEN_WEATHER')
 logging.basicConfig(level=logging.INFO)
 
 
-@api_view(['GET', 'POST'])
 def index(request):
     logging.info('index started')
     post_list = Post.objects.all().select_related('author')
@@ -132,7 +131,6 @@ def weather(request):
     return render(request, "posts/weather.html", data)
 
 
-@api_view(['GET', 'POST'])
 def post_detail(request, post_id):
     logging.info('post_detail started')
     template = 'posts/post_detail.html'
@@ -249,4 +247,41 @@ def add_like(request, post_id):
     return redirect('posts:post_detail', post_id=post_id)
 
 
+def add_like_comment(request, pk):
+    comment = get_object_or_404(Comment, id=pk)
+    if comment.likes_comment.filter(id=request.user.id).exists():
+        comment.likes_comment.remove(request.user)
+    else:
+        comment.likes_comment.add(request.user)
+    return redirect('posts:index')
 
+
+@login_required
+def follow_index(request):
+    post_list = Post.objects.filter(author__following__user=request.user).all()
+    context = {
+        'page_obj': paginator_func(request, post_list),
+    }
+    return render(request, 'posts/follow.html', context)
+
+
+@login_required
+def profile_follow(request, username):
+    if request.user.username == username:
+        return redirect('posts:profile', username)
+    following = get_object_or_404(User, username=username)
+    already_follows = Follow.objects.filter(
+        user=request.user,
+        author=following
+    ).exists()
+    if not already_follows:
+        Follow.objects.create(user=request.user, author=following)
+    return redirect('posts:profile', username)
+
+
+@login_required
+def profile_unfollow(request, username):
+    following = get_object_or_404(User, username=username)
+    follower = get_object_or_404(Follow, author=following, user=request.user)
+    follower.delete()
+    return redirect('posts:profile', username)

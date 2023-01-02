@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from .models import Comment, LatLon, Map, Post
+from .models import Comment, LatLon, Map, Post, Profile
 
 
 class PostForm(ModelForm):
@@ -45,4 +45,13 @@ class CommentForm(ModelForm):
         fields = ('text',)
         labels = {
             'text': 'Текст',
+        }
+
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('avatar',)
+        labels = {
+            'avatar': 'ava',
         }

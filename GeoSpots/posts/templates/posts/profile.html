@@ -3,29 +3,93 @@
   Профайл пользователя {{ username }}
 {% endblock title %}
 {% block content %}
-{% load thumbnail %}
-<div class="col-md-2">
-  {% thumbnail user.profile.avatar "400x400" crop="center" upscale=True as im %}
-    <img class="card-img my-2" src="{{ im.url }}">
-  {% endthumbnail %}
-</div>
-<div class="container py-5">        
-  <h1>Все посты пользователя {{ username }} </h1>
-  <h3>Всего постов: {{ post_counter }} </h3>   
-  <article>
-  {% for post in page_obj %}
-    <ul>
-      <li>
-        Автор: {{ username }}
-      </li>
-      <li>
-        Дата публикации: {{ post.pub_date|date:"d E Y" }}
-      </li>
-    </ul>
-    <p>{{ post.text|linebreaksbr }}</p>
+{% load static %}
+<div id="bodycolor">
+  {% load thumbnail %}
+
+
+
+  <div class="container text-center">
+    <div class="row">
+      <div class="container">
+        <div class="col"  id="left">
+          
+            <div id="indent">
+              <div id="text_size">
+                {% thumbnail username.profile.avatar "200x200" crop="center" upscale=True as im %}
+                  <img class="rounded-circle" src="{{ im.url }}">
+                {% endthumbnail %}
+                  {{ username }} 
+            </div>  
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        Edit profile
+      </div>
+    </div>
+  </div>
+
     
-    {% if not forloop.last %}<hr>{% endif %}
-  {% endfor %}
-  </article>
-</div>
+
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-10">
+        <div class="container">        
+          <article>
+            
+            {% for post in page_obj %}
+            <p>
+              <div id="article">
+                <div id="left">
+                  <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
+                  <p>{{ post.text|linebreaksbr }}</p>
+                  <div style='border-radius: 5px;'>
+
+                    {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                      <img class="card-img my-2"  src="{{ im.url }}">
+                    {% endthumbnail %}
+                  </div>
+                {% if not forloop.last %}
+                {% endif %}
+                <p class="card-text"><small class="text-muted">Comments </small></p>
+                <a class="btn btn-small btn-primary" href="{% url 'posts:post_detail' post.pk %}">
+                  Explore
+                </a>
+              
+                </div>
+              </div>
+            {% endfor %}
+          </article>
+        </div>
+
+      </div>
+      <div class="col">
+        {% for post in page_obj %}
+            <p>
+              <div id="article">
+                <div id="left">
+                  <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
+                  <p>{{ post.text|truncatewords:20 }}</p>
+                  <div style='border-radius: 5px;'>
+
+                    {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                      <img class="card-img my-2"  src="{{ im.url }}">
+                    {% endthumbnail %}
+                  </div>
+                {% if not forloop.last %}
+                {% endif %}
+                <p class="card-text"><small class="text-muted">Comments </small></p>
+                <a class="btn btn-small btn-primary" href="{% url 'posts:post_detail' post.pk %}">
+                  Explore
+                </a>
+              
+                </div>
+              </div>
+            {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>    
+
 {% endblock content%}
