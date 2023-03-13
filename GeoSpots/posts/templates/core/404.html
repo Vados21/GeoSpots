@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Custom 404{% endblock %}
+{% block content %}
+  <h1>Custom 404</h1>
+  <p>Page {{ path }} no exist</p>
+  <a href="{% url 'posts:index' %}">back home</a>
+{% endblock %} 

@@ -1,0 +1,44 @@
+{% extends 'posts/base.html' %}
+{% block title %}
+Profile settings
+{% endblock %}
+
+{% block header %}
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="main_set">
+    <div class="padding_top"
+        <main>
+            <h1>Profile Settings</h1>
+            <form>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}">
+                </div>
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="avatar">Avatar</label>
+                    <input type="file" id="avatar" name="avatar">
+                    <img src="{{ user.avatar.url }}" alt="Avatar" class="avatar-preview">
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </main>
+    </div>
+</div>
+{% endblock content %}

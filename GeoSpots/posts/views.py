@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import CommentForm, LatLonForm, PostForm
+from .forms import CommentForm, LatLonForm, PostForm, ExampleForm
 from .models import Post, User, Comment, Follow
 
 import urllib.request
@@ -28,18 +28,22 @@ logging.basicConfig(level=logging.INFO)
 
 
 def index(request):
+    """ Main page """
     logging.info('index started')
     post_list = Post.objects.all().select_related('author')
-    paginator = Paginator(post_list, 10)
+    post_list_random = Post.objects.all().select_related('author').order_by('?')
+    paginator = Paginator(post_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
+        'post_list_random': post_list_random,
     }
     return render(request, 'posts/index.html', context)
 
 
-def my_page(request):
+def map_page(request):
+    """ Map page """
     logging.info('map started')
     form = LatLonForm(request.POST or None)
     if form.is_valid():
@@ -47,17 +51,18 @@ def my_page(request):
         instance.save()
     map_folium = folium.Map(
         location=[61.171310, 28.766600],
-        width=1200, height=700, zoom_start=4
+        width=1420, height=855, zoom_start=4
     )
     point_list = Post.objects.all().values()
 
     map_folium.add_child(folium.LatLngPopup())
-
+    """ add marks to map """
     for i in point_list:
         for_title = i.get('title')
         for_lat = i.get('lat')
         for_lon = i.get('lon')
         for_group = i.get('group_id')
+        """ add group to mark """
         if for_group == 2:
             folium.Marker(
                 location=[for_lat, for_lon],
@@ -72,7 +77,6 @@ def my_page(request):
                     icon="glyphicon-tree-conifer",
                     prefix='glyphicon', color='green')
                     ).add_to(map_folium)
-
         else:
             folium.Marker(
                 location=[for_lat, for_lon],
@@ -90,14 +94,20 @@ def my_page(request):
     return render(request, 'posts/map.html', context)
 
 
-def follow(request):
-    data = urllib.request.urlopen('https://api.openweathermap.org/data/2.5/weather?lat=60.1634&lon=23.5107&appid=' + secret_token + '&=' + secret_token +'&units=metric').read()
-    list_of_data = json.loads(data)
+def favorites(request, username):
+    logging.info('favorites started')
+    user = get_object_or_404(User, username=username)
+    post_list = user.likes.select_related('group')
+    paginator = Paginator(post_list, 10)
+    page_number = request.GET.get('page')
+    post_counter = paginator.count
+    page_obj = paginator.get_page(page_number)
     context = {
-        'temp': str(list_of_data['main']['temp']) + ' °C',
+        'username': user,
+        'post_counter': post_counter,
+        'page_obj': page_obj,
     }
-    print(data)
-    return render(request, 'posts/follow.html', context)
+    return render(request, 'posts/favorites.html', context)
 
 
 def weather(request):
@@ -260,7 +270,7 @@ def add_like_comment(request, pk):
 def follow_index(request):
     post_list = Post.objects.filter(author__following__user=request.user).all()
     context = {
-        'page_obj': paginator_func(request, post_list),
+        'post_list': post_list,
     }
     return render(request, 'posts/follow.html', context)
 
@@ -285,3 +295,12 @@ def profile_unfollow(request, username):
     follower = get_object_or_404(Follow, author=following, user=request.user)
     follower.delete()
     return redirect('posts:profile', username)
+
+
+def settings(request, username):
+    logging.info('settings started')
+    user = get_object_or_404(User, username=username)
+    context = {
+        'username': user,
+    }
+    return render(request, 'posts/settings.html', context)

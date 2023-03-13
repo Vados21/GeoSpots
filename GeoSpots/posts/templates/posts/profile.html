@@ -4,32 +4,34 @@
 {% endblock title %}
 {% block content %}
 {% load static %}
-<div id="bodycolor">
+<div class="bodycolor">
   {% load thumbnail %}
 
 
+  <div class="padding_top">
+    <div class="container text-center">
+      <div class="row">
+        <div class="container">
+          <div class="col">
+            <div class="left">
+                <div class="indent">
+                  <div id="text_size">
+                    {% thumbnail username.profile.avatar "200x200" crop="center" upscale=True as im %}
+                      <img class="rounded-circle" src="{{ im.url }}">
+                    {% endthumbnail %}
+                      {{ username }} 
+                  </div>
+                </div>  
+            </div>
 
-  <div class="container text-center">
-    <div class="row">
-      <div class="container">
-        <div class="col"  id="left">
-          
-            <div id="indent">
-              <div id="text_size">
-                {% thumbnail username.profile.avatar "200x200" crop="center" upscale=True as im %}
-                  <img class="rounded-circle" src="{{ im.url }}">
-                {% endthumbnail %}
-                  {{ username }} 
-            </div>  
           </div>
         </div>
-      </div>
-      <div class="col">
-        Edit profile
+        <div class="col">
+          Edit profile
+        </div>
       </div>
     </div>
   </div>
-
     
 
   <div class="container text-center">
@@ -40,8 +42,8 @@
             
             {% for post in page_obj %}
             <p>
-              <div id="article">
-                <div id="left">
+              <div class="article">
+                <div class="left">
                   <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
                   <p>{{ post.text|linebreaksbr }}</p>
                   <div style='border-radius: 5px;'>
@@ -62,13 +64,12 @@
             {% endfor %}
           </article>
         </div>
-
       </div>
       <div class="col">
         {% for post in page_obj %}
             <p>
-              <div id="article">
-                <div id="left">
+              <div class="article">
+                <div class="left">
                   <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
                   <p>{{ post.text|truncatewords:20 }}</p>
                   <div style='border-radius: 5px;'>

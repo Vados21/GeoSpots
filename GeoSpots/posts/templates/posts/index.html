@@ -9,125 +9,159 @@ Home page
 {% endblock %}
 
 {% block content %}
-<!--<p><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15386.17476476523!2d28.774751099999996!3d61.1809525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4690a60954670931%3A0x1ca1e1f6ed6f1e03!2sVeikonpolku%202%2C%2055100%20Imatra!5e0!3m2!1sru!2sfi!4v1661949321253!5m2!1sru!2sfi" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></p> -->
-{% load thumbnail %}
-  {% for post in page_obj %} 
-    <hr>
-    <div class="container style=border: thin solid black">
-
-        <div class="row">
-          <div class="col-md-5">      
-            <strong><h4>Post #{{ post.pk }}</h4></strong>
-            <aside class="col-12 col-md-7"> 
-
-                <ul class="list-group list-group-flush"> 
-                  <li class="list-group-item">       
-                    Author: <a href="{% url 'posts:profile' post.author %}"> {{ post.author }}</a>
-                 </li>
-                  <li class="list-group-item">
-                    Pub date: {{ post.pub_date|date:"d E Y" }}
-                  </li>
-                  <li class="list-group-item">  
-                    Point:   {{ post.title }}
-                  </li>
-                  <li class="list-group-item">
-                    Category: {{ post.group.title }}
-                  </li>
-                  <li class="list-group-item">
-                    lat:   {{ post.lat }}
-                    <p>lon:   {{ post.lon }}</p>
-                  </li>
-                  <li class="list-group-item">
-                    <a href="{% url 'posts:add_like' post.pk %}"> 
-                      <img src="media/icons/like.jpg" width="25", height="25">
-                    </a>
-                    Likes: {{ post.likes.count }}
-                  </li>
-                    <a href="{% url 'posts:post_detail' post.pk %}">Post detail</a>
-                </ul>
-
-
-            </aside>
-          </div>  
-            <div class="col-md-7">
-              <p><strong><h3>{{ post.title }}</h3></strong></p>
-              <p>{{ post.text }}</p>
-              {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
-                <img class="card-img my-2" src="{{ im.url }}">
-              {% endthumbnail %}
-
+{% load static %}
+<div class="bodycolor">
+  {% load thumbnail %}
+  <div class="container text-center">
+    <div class="padding_top">
+      <div class="row">
+        <div class="col">
+        </div>
+        <div class="col-6">
+          <div class="container">  
+            <div class="mb-3">
+              <label for="exampleFormControlInput1" class="form-label"></label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Post name">
+            </div>
+            <div class="mb-3">
+              <label  class="form-label" placeholder="Post name"></label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Write your post">
+              <div class="container">
+                  <button type="button" class="btn btn-outline-primary" id="myBtn"><img src="\media\icons\Place.svg" width="15" height="15"> Add place</button>
+                  <button type="button" class="btn btn-outline-primary" ><img src="\media\icons\photo.svg" width="15" height="15"> Add photo</button>
+                  <button type="button" class="btn btn-outline-primary" > Send</button>
+            </div>
+            </div>
             
-                            <hr>
-                {% if not post.comments.all %}
-                <p>No comments yet</p>
-                  <p><a href={% url 'posts:add_comment' post.pk %}> Add first comment</a>
-                {% else %}
-                  <h3><strong>Comments:</strong></h3>
-                  {% load thumbnail %}
-                  {% for comment in post.comments.all %}
 
+<!-- The Modal -->
+<div id="myModal" class="modal">
 
-
-                  <div class="card mb-3">
-                    <div class="row g-5">
-                      <div class="col-md-2">
-                        {% if comment.author.profile.avatar %}
-                          {% thumbnail post.author.profile.avatar "50x50" crop="center" upscale=True as im %}
-                            <img class="rounded-circle" src="{{ im.url }}">
-                          {% endthumbnail %}
-                          <p>{{ comment.author.username }}</p>
-                          <a href="{% url 'posts:profile' comment.author %}"> {{ coment.author }}</a>
-                        {% else %}
-                          <img src="media/avatars/noava.jpg" width="50", height="50" class="rounded-circle">
-
-                          <p>{{ comment.author.username }}</p>
-                          <a href="{% url 'posts:profile' comment.author %}"> {{ coment.author }}</a>
-                        {% endif %}
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    {% for field in form %} 
+                      <div class="form-group row my-3">
+                        <label for="{{ field.id_for_label }}">
+                          {{ field.label }}
+                            {% if field.field.required %}
+                              <span class="required text-danger">*</span>
+                            {% endif %}
+                        </label>
+                        {{ field }} 
+                          {% if field.help_text %}
+                            <small 
+                               id="{{ field.id_for_label }}-help"
+                               class="form-text text-muted"
+                            >
+                              {{ field.help_text|safe }}
+                            </small>
+                          {% endif %}
                       </div>
-                      
+                    {% endfor %}
+    <form method="post">
+      <div class="form-group">
+        <label for="{{ form.image.id_for_label }}">image</label>
+        {{ form.image }}
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+      {% csrf_token %}
+    </form>
+  </div>
 
-                      <div class="col-md-8">
-                        <div class="card-body">
-                      
-                          <p class="card-text">{{ comment.text }}</p>
-                          <li class="list-group-item">
-                            <a href="{% url 'posts:add_like_comment' comment.pk %}"> 
-                              <img src="media/icons/like.jpg" width="25", height="25">
-                            </a>
-                            Likes: {{ comment.likes_comment.count }}
-                          </li>
-                          <p class="card-text"><small class="text-muted">posted {{ comment.whenpublished }}</small></p>
-                        </div>
+</div>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+              <article>
+
+                {% for post in page_obj %}
+                <p>
+                  <div class="article">
+                    <div class="left">
+                      <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
+                      <p>{{ post.text|linebreaksbr }}</p>
+                      <div class='photo'>
+
+                        {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                          <img class="card-img my-2"  src="{{ im.url }}">
+                        {% endthumbnail %}
                       </div>
+                    {% if not forloop.last %}
+                    {% endif %}
+                    <p class="card-text"><small class="text-muted">Comments </small></p>
+                    <a class="btn btn-small btn-primary" href="{% url 'posts:post_detail' post.pk %}">
+                      Explore
+                    </a>
+                  
                     </div>
                   </div>
-                  
+                {% endfor %}
+              </article>
 
-
-
-                  {% endfor %} 
-
-
-                      <form method="post" action="{% url 'posts:add_comment' post.id %}">
-                        <input type="hidden" name="csrfmiddlewaretoken" value="" placeholder="Username">      
-                        <div class="form-group mb-2">
-                          <textarea name="text" cols="40" rows="1" class="form-control" required id="id_text">
-                          </textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send</button>
-                        {% csrf_token %}
-                      </form>
-
-
-              
-                {% endif %}
-              </div>
           </div>
         </div>
+        
+        <div class="col-4" id="padding_left">
+                {% for post in post_list_random %}
+                    <p>
+                        <div class="article">
+                          <div class="left">
+                            <p><strong><big>{{ post.title }}</big></strong> | {{ post.group.title }}  </p>
+                            <p>{{ post.text|truncatewords:20 }}</p>
+                            <div style='border-radius: 5px;'>
+                             {% thumbnail post.image "960x339" crop="center" upscale=True as im %}
+                                <img class="card-img my-2"  src="{{ im.url }}">
+                              {% endthumbnail %}
+                            </div>
+                          {% if not forloop.last %}
+                          {% endif %}
+                          <p class="card-text"><small class="text-muted">Comments </small></p>
+                          <a class="btn btn-small btn-primary" href="{% url 'posts:post_detail' post.pk %}">
+                            Explore
+                          </a>
+                          </div>
+                        </div>
 
+                {% endfor %}
+              </div>   
+            </div>    
+        </div>
+           
+      </div>
     </div>
 
+    <div class="bodycolor" id="padding_left">
+      {% include 'posts/includes/paginator.html' %}  
+    </div>
+  </div>
+  
+</div>    
 
-
-  {% endfor %}
-{% endblock %}
+{% endblock content%}
